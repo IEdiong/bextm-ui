@@ -1,2 +1,69 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans", sans-serif;
+
+  /* Colors */
+  --color-*: initial;
+  --color-neutral-900: hsl(226, 75%, 14%);
+  --color-neutral-800: hsl(226, 25%, 17%);
+  --color-neutral-700: hsl(225, 23%, 24%);
+  --color-neutral-600: hsl(226, 11%, 37%);
+  --color-neutral-300: hsl(0, 0%, 78%);
+  --color-neutral-200: hsl(217, 61%, 90%);
+  --color-neutral-100: hsl(0, 0%, 93%);
+  --color-neutral-0: hsl(200, 60%, 99%);
+
+  --color-red-700: hsl(3, 77%, 44%);
+  --color-red-500: hsl(3, 71%, 56%);
+  --color-red-400: hsl(3, 86%, 64%);
+
+  --color-lg-start: hsl(215, 74%, 95%);
+  --color-lg-end: hsl(185, 48%, 95%);
+  --color-dark-start: hsl(225, 71%, 5%);
+  --color-dark-end: hsl(227, 75%, 14%);
+
+  /* Spacing */
+  --spacing-*: initial;
+  --spacing-0: 0;
+  --spacing-25: 0.125rem;
+  --spacing-50: 0.25rem;
+  --spacing-75: 0.375rem;
+  --spacing-100: 0.5rem;
+  --spacing-125: 0.625rem;
+  --spacing-150: 0.75rem;
+  --spacing-200: 1rem;
+  --spacing-250: 1.25rem;
+  --spacing-300: 1.5rem;
+  --spacing-400: 2rem;
+  --spacing-500: 2.5rem;
+  --spacing-600: 3rem;
+  --spacing-800: 4rem;
+  --spacing-1000: 5rem;
+
+  /* Radius */
+  --radius-*: initial;
+  --radius-10: 0.625rem;
+  --radius-12: 0.75rem;
+
+  /* Shadow */
+  --shadow-*: initial;
+  --shadow-header: 0px 2px 3px 0px rgb(217, 229, 244);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+
+    min-height: 100dvh;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
