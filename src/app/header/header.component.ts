@@ -5,11 +5,12 @@ import {
   signal,
 } from '@angular/core';
 import { ThemeService } from '@core/services/theme/theme.service';
+import { IconLogoComponent } from '../icon-logo/icon-logo.component';
 
 @Component({
   selector: 'bem-header',
   standalone: true,
-  imports: [],
+  imports: [IconLogoComponent],
   templateUrl: './header.component.html',
   styles: `
     :host {

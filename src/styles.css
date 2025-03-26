@@ -7,7 +7,7 @@
 
   /* Colors */
   --color-*: initial;
-  --color-neutral-900: hsl(226, 75%, 14%);
+  --color-neutral-900: oklch(21.79% 0.0835 267.08);
   --color-neutral-800: hsl(226, 25%, 17%);
   --color-neutral-700: hsl(225, 23%, 24%);
   --color-neutral-600: hsl(226, 11%, 37%);
@@ -24,6 +24,8 @@
   --color-lg-end: hsl(185, 48%, 95%);
   --color-dark-start: hsl(225, 71%, 5%);
   --color-dark-end: hsl(227, 75%, 14%);
+
+  --color-white: hsl(0, 0%, 100%);
 
   /* Spacing */
   --spacing-*: initial;
