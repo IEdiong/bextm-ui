@@ -1,0 +1,20 @@
+<header
+  class="rounded-10 bg-neutral-0 shadow-header flex items-center justify-between border border-neutral-200 px-150 py-100 dark:border-none dark:bg-neutral-800 dark:shadow-none"
+>
+  <div class="">
+    <img src="logo.svg" alt="logo" />
+  </div>
+
+  <!-- TODO: 1. Extract to a component and implement a11y -->
+  <button
+    aria-label="Theme toggle"
+    class="rounded-12 inline-flex size-[50px] items-center justify-center bg-neutral-100 dark:bg-neutral-700"
+    (click)="toggleTheme()"
+  >
+    @if (isDarkTheme() === "light") {
+      <img src="icon-moon.svg" alt="" aria-hidden="true" />
+    } @else {
+      <img src="icon-sun.svg" alt="" aria-hidden="true" />
+    }
+  </button>
+</header>
