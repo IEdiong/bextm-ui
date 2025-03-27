@@ -5,7 +5,9 @@
 
 :root {
   --text-preset-1: 700 2.125rem/100% var(--font-sans);
+  --text-preset-2: 700 1.25rem/120% var(--font-sans);
   --text-preset-3: 400 1.25rem/140% var(--font-sans);
+  --text-preset-5: 400 1rem/140% var(--font-sans);
 }
 @theme {
   --font-sans: "Noto Sans", sans-serif;
@@ -56,19 +58,28 @@
   --radius-*: initial;
   --radius-10: 0.625rem;
   --radius-12: 0.75rem;
+  --radius-20: 1.25rem;
   --radius-full: calc(infinity * 1px);
 
   /* Shadow */
   --shadow-*: initial;
   --shadow-header: 0px 2px 3px 0px rgb(217, 229, 244);
+  --shadow-card:
+    0px 2px 2px 0px rgba(194, 206, 225, 0.2),
+    0px 1px 5px 1px rgba(194, 206, 225, 0.22);
+  --shadow-thumb:
+    0px 1px 3px 0px rgba(10, 13, 18, 0.15),
+    0px 1px 2px -1px rgba(10, 13, 18, 0.15);
+
+  --shadow-thumb-active:
+    0px 1px 3px 0px rgba(10, 13, 18, 0.3),
+    0px 1px 2px -1px rgba(10, 13, 18, 0.3);
 }
 
 @layer base {
   body {
-    font-family: var(--font-sans);
-    font-optical-sizing: auto;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
+    font: var(--text-preset-5);
+    letter-spacing: -0.5px;
 
     min-height: 100dvh;
   }
@@ -78,9 +89,19 @@
     display: block;
   }
 
+  h1,
+  h2 {
+    color: var(--color-neutral-900);
+  }
+
   h1 {
     font: var(--text-preset-1);
     letter-spacing: -1px;
+  }
+
+  h2 {
+    font: var(--text-preset-2);
+    letter-spacing: -0.2px;
   }
 
   button {
@@ -175,5 +196,11 @@
 @layer utilities {
   .text-preset-3 {
     font: var(--text-preset-3);
+  }
+
+  .extensions-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: var(--spacing-150);
   }
 }
