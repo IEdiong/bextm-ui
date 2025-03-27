@@ -14,7 +14,7 @@ interface FilterOption {
   imports: [],
   template: `
     <div
-      class="tablet:flex tablet:items-center tablet:justify-between tablet:space-y-0 space-y-300 text-center"
+      class="tablet:items-center tablet:flex-row tablet:justify-between tablet:gap-y-0 flex flex-col gap-y-300 text-center"
     >
       <h1 class="dark:text-neutral-0 text-neutral-900">Extensions List</h1>
       <div
