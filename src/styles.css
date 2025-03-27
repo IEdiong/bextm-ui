@@ -2,6 +2,11 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root {
+  --text-preset-1: 700 2.125rem/100% var(--font-sans);
+  --text-preset-3: 400 1.25rem/140% var(--font-sans);
+}
 @theme {
   --font-sans: "Noto Sans", sans-serif;
 
@@ -27,6 +32,8 @@
 
   --color-white: hsl(0, 0%, 100%);
 
+  --color-ring: var(--color-red-400);
+
   /* Spacing */
   --spacing-*: initial;
   --spacing-0: 0;
@@ -49,6 +56,7 @@
   --radius-*: initial;
   --radius-10: 0.625rem;
   --radius-12: 0.75rem;
+  --radius-full: calc(infinity * 1px);
 
   /* Shadow */
   --shadow-*: initial;
@@ -68,5 +76,104 @@
   img {
     max-width: 100%;
     display: block;
+  }
+
+  h1 {
+    font: var(--text-preset-1);
+    letter-spacing: -1px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .filter-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding-inline: var(--spacing-250);
+    padding-block-start: var(--spacing-100);
+    padding-block-end: var(--spacing-125);
+    height: 46px;
+
+    font: var(--text-preset-3);
+    letter-spacing: -0.3px;
+    color: var(--color-neutral-900);
+
+    border-radius: calc(infinity * 1px);
+    border: 1px solid var(--color-neutral-200);
+    background: var(--color-neutral-0);
+    box-shadow: 0px 1px 2px 0px rgba(184, 196, 215, 0.4);
+    transition: all 0.3s ease-in-out;
+
+    @variant hover {
+      opacity: 0.7;
+      box-shadow: none;
+    }
+
+    @variant focus-visible {
+      outline: var(--spacing-25) solid var(--color-ring);
+      outline-offset: 1px;
+      /* border-width: var(--spacing-25); */
+      box-shadow: none;
+    }
+
+    @variant dark {
+      color: var(--color-neutral-0);
+      background: var(--color-neutral-700);
+      border-color: var(--color-neutral-600);
+      box-shadow: none;
+
+      @variant hover {
+        background: var(--color-neutral-600);
+        opacity: 1;
+      }
+
+      @variant focus-visible {
+        outline: var(--spacing-25) solid var(--color-ring);
+        outline-offset: 1px;
+        border-color: var(--color-neutral-900);
+        box-shadow: none;
+      }
+    }
+  }
+  .filter-btn__active {
+    background: var(--color-red-700);
+    color: var(--color-neutral-0);
+    border: none;
+    box-shadow: none;
+
+    @variant hover {
+      background: var(--color-red-500);
+    }
+
+    @variant focus-visible {
+      outline: var(--spacing-25) solid var(--color-ring);
+      outline-offset: var(--spacing-25);
+    }
+
+    /* Dark mode styles */
+    @variant dark {
+      background: var(--color-red-400);
+      color: var(--color-neutral-900);
+
+      @variant hover {
+        background: var(--color-red-500);
+      }
+
+      @variant focus-visible {
+        outline: var(--spacing-25) solid var(--color-ring);
+        outline-offset: var(--spacing-25);
+        border-color: var(--color-neutral-900);
+      }
+    }
+  }
+}
+
+@layer utilities {
+  .text-preset-3 {
+    font: var(--text-preset-3);
   }
 }
