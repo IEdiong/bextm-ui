@@ -13,7 +13,9 @@ interface FilterOption {
   standalone: true,
   imports: [],
   template: `
-    <div class="space-y-300 text-center">
+    <div
+      class="tablet:flex tablet:items-center tablet:justify-between tablet:space-y-0 space-y-300 text-center"
+    >
       <h1 class="dark:text-neutral-0 text-neutral-900">Extensions List</h1>
       <div
         class="flex items-center justify-center gap-x-150"

@@ -13,7 +13,7 @@ import { IconLogoComponent } from '../icon-logo/icon-logo.component';
   imports: [IconLogoComponent],
   template: `
     <header
-      class="rounded-10 bg-neutral-0 shadow-header flex items-center justify-between border border-neutral-200 px-150 py-100 dark:border-none dark:bg-neutral-800 dark:shadow-none"
+      class="rounded-10 tablet:rounded-20 bg-neutral-0 shadow-header tablet:py-150 tablet:px-200 flex items-center justify-between border border-neutral-200 px-150 py-100 dark:border-none dark:bg-neutral-800 dark:shadow-none"
     >
       <bem-icon-logo />
 
@@ -24,7 +24,7 @@ import { IconLogoComponent } from '../icon-logo/icon-logo.component';
           isDarkTheme() === 'light' ? 'Toggle dark mode' : 'Toggle light mode'
         "
         aria-live="polite"
-        class="rounded-12 focus-visible:ring-ring inline-flex size-[50px] items-center justify-center bg-neutral-100 transition-all focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-neutral-700"
+        class="rounded-12 focus-visible:ring-ring inline-flex size-[50px] items-center justify-center bg-neutral-100 transition-all duration-300 hover:bg-neutral-300 focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-neutral-700"
         (click)="toggleTheme()"
       >
         @if (isDarkTheme() === 'light') {

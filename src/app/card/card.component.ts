@@ -20,7 +20,7 @@ import { SwitchComponent } from '../switch/switch.component';
 
       <div class="flex items-center justify-between">
         <button
-          class="dark:text-neutral-0 inline-flex items-center justify-center rounded-full border border-neutral-200 px-200 py-100 dark:border-neutral-600"
+          class="dark:text-neutral-0 hover:text-neutral-0 focus-visible:ring-ring inline-flex items-center justify-center rounded-full border border-neutral-200 px-200 py-100 transition-all duration-300 hover:border-transparent hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none dark:border-neutral-600"
         >
           Remove
         </button>
