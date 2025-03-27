@@ -2,17 +2,6 @@
   <bem-header />
   <main class="tablet:space-y-400 laptop:mt-800 mt-500 space-y-500">
     <bem-filter-toolbar />
-    <ul class="extensions-container">
-      @for (extension of extensions; track extension.name) {
-        <li>
-          <bem-card
-            [logo]="extension.logo"
-            [name]="extension.name"
-            [description]="extension.description"
-            [isActive]="extension.isActive"
-          />
-        </li>
-      }
-    </ul>
+    <bem-extension-list />
   </main>
 </div>
