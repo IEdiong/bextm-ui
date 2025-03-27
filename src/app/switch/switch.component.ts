@@ -28,10 +28,10 @@ import { NgClass } from '@angular/common';
       [disabled]="disabled()"
       (click)="toggle()"
       (keydown.space)="toggle(); $event.preventDefault()"
-      class="group focus-visible:ring-ring flex h-250 w-[36px] items-center rounded-full p-25 transition-colors duration-300 ease-in-out focus:ring-offset-2 focus:outline-none focus-visible:ring-2"
+      class="group focus-visible:ring-ring flex h-250 w-[36px] cursor-pointer items-center rounded-full p-25 transition-colors duration-300 ease-in-out focus:ring-offset-2 focus:outline-none focus-visible:ring-2"
       [ngClass]="{
-        'bg-neutral-300': !value() && !disabled(),
-        'bg-red-500 focus-visible:bg-red-700': value() && !disabled(),
+        'bg-neutral-300 dark:bg-neutral-600': !value() && !disabled(),
+        'bg-red-700 hover:bg-red-500 dark:bg-red-400': value() && !disabled(),
         'bg-neutral-100': disabled(),
         'cursor-pointer': !disabled(),
         'cursor-not-allowed': disabled(),
