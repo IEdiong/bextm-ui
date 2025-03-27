@@ -28,7 +28,6 @@ interface FilterOption {
             [class.filter-btn__active]="option.key === activeFilter()"
             [ariaPressed]="option.key === activeFilter()"
             [ariaLabel]="option.ariaLabel"
-            type="button"
           >
             {{ option.label }}
           </button>

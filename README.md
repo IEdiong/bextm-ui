@@ -1,6 +1,6 @@
 # Frontend Mentor - Browser extensions manager UI solution
 
-This is a solution to the [Browser extensions manager UI challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/browser-extension-manager-ui-yNZnOfsMAp). Frontend Mentor challenges help you improve your coding skills by building realistic projects. 
+This is a solution to the [Browser extensions manager UI challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/browser-extension-manager-ui-yNZnOfsMAp). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
 
 ## Table of contents
 
@@ -53,27 +53,45 @@ Users should be able to:
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
+#### 1. Accessible filter buttons
 
-To see how you can add code snippets, see below:
+To make a group of filter buttons accessible, ensure they are semantically grouped using `role="group"` or `role="toolbar"`, and labeled using `aria-label` or `aria-labelledby`, and that the selected button's state is indicated using `aria-pressed`.
+
+Here's a more detailed breakdown:
+
+**Semantic Grouping:**
+
+- Use `role="group"` for a simple button group or `role="toolbar"` for a more complex toolbar with multiple groups.
+
+**Labeling:**
+
+- Use `aria-label="Filter Options"` or `aria-labelledby="filter-label"` to provide a descriptive label for the entire group.
+- If you have a separate label element, use `aria-labelledby="filter-label"` to link the label to the button group.
+
+**Selected State:**
+
+- Use `aria-pressed="true"` on the currently selected button to indicate its state to screen reader users.
+- When a button is toggled, ensure the `aria-pressed` attribute updates accordingly.
+
+**Keyboard Navigation:**
+
+- Ensure the filter group is a single tab stop, allowing users to navigate to it with the tab key.
+- Use arrow keys to navigate within the filter group.
+
+**Visual Cues:**
+
+- Provide distinct visual cues for different button states (hover, focus, active).
+- Ensure sufficient color contrast between the button text and background.
+
+**Example:**
 
 ```html
-<h1>Some HTML code I'm proud of</h1>
+<div role="group" aria-label="Filter Options">
+  <button aria-pressed="false">All</button>
+  <button aria-pressed="true">Active</button>
+  <button aria-pressed="false">Inactive</button>
+</div>
 ```
-```css
-.proud-of-this-css {
-  color: papayawhip;
-}
-```
-```js
-const proudOfThisFunc = () => {
-  console.log('🎉')
-}
-```
-
-If you want more help with writing markdown, we'd recommend checking out [The Markdown Guide](https://www.markdownguide.org/) to learn more.
-
-**Note: Delete this note and the content within this section and replace with your own learnings.**
 
 ### Continued development
 
