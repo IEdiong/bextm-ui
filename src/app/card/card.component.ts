@@ -12,7 +12,7 @@ import { SwitchComponent } from '../switch/switch.component';
       <div class="flex items-start justify-start gap-x-200">
         <img [src]="logo()" alt="" />
 
-        <div class="flex-1 space-y-100">
+        <div class="flex flex-1 flex-col gap-y-100">
           <h2>{{ name() }}</h2>
           <p>{{ description() }}</p>
         </div>
