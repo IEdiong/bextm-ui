@@ -1,34 +1,18 @@
-<bem-header />
-<main class="mt-500 space-y-500">
-  <bem-filter-toolbar />
-  <ul class="extensions-container">
-    @for (extension of extensions; track extension.name) {
-      <li>
-        <article
-          class="rounded-20 bg-neutral-0 shadow-card flex h-[200px] max-w-[382px] flex-col justify-between border border-neutral-200 p-250 dark:border-neutral-600 dark:bg-neutral-800 dark:shadow-none"
-        >
-          <div class="flex items-start justify-between gap-x-200">
-            <img src="logo-devlens.svg" alt="" />
-
-            <div class="space-y-100">
-              <h2>DevLens</h2>
-              <p>
-                Quickly inspect page layouts and visualize element boundaries.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between">
-            <button
-              class="dark:text-neutral-0 inline-flex items-center justify-center rounded-full border border-neutral-200 px-200 py-100 dark:border-neutral-600"
-            >
-              Remove
-            </button>
-
-            <bem-switch />
-          </div>
-        </article>
-      </li>
-    }
-  </ul>
-</main>
+<div class="container-max">
+  <bem-header />
+  <main class="mt-500 space-y-500">
+    <bem-filter-toolbar />
+    <ul class="extensions-container">
+      @for (extension of extensions; track extension.name) {
+        <li>
+          <bem-card
+            [logo]="extension.logo"
+            [name]="extension.name"
+            [description]="extension.description"
+            [isActive]="extension.isActive"
+          />
+        </li>
+      }
+    </ul>
+  </main>
+</div>

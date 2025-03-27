@@ -4,6 +4,7 @@ import {
   input,
   signal,
   ChangeDetectionStrategy,
+  model,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgClass } from '@angular/common';
@@ -22,7 +23,7 @@ import { NgClass } from '@angular/common';
   template: `
     <button
       role="switch"
-      [attr.aria-checked]="value()"
+      [attr.aria-checked]="modelValue()"
       [attr.aria-label]="label()"
       [attr.aria-disabled]="disabled()"
       [disabled]="disabled()"
@@ -30,8 +31,9 @@ import { NgClass } from '@angular/common';
       (keydown.space)="toggle(); $event.preventDefault()"
       class="group focus-visible:ring-ring flex h-250 w-[36px] cursor-pointer items-center rounded-full p-25 transition-colors duration-300 ease-in-out focus:ring-offset-2 focus:outline-none focus-visible:ring-2"
       [ngClass]="{
-        'bg-neutral-300 dark:bg-neutral-600': !value() && !disabled(),
-        'bg-red-700 hover:bg-red-500 dark:bg-red-400': value() && !disabled(),
+        'bg-neutral-300 dark:bg-neutral-600': !modelValue() && !disabled(),
+        'bg-red-700 hover:bg-red-500 dark:bg-red-400':
+          modelValue() && !disabled(),
         'bg-neutral-100': disabled(),
         'cursor-pointer': !disabled(),
         'cursor-not-allowed': disabled(),
@@ -41,10 +43,10 @@ import { NgClass } from '@angular/common';
         aria-hidden="true"
         class="block size-200 transform rounded-full transition-transform duration-300 ease-in-out"
         [ngClass]="{
-          'translate-x-200': value(),
-          'shadow-thumb translate-x-0': !value(),
+          'translate-x-200': modelValue(),
+          'shadow-thumb translate-x-0': !modelValue(),
           'shadow-thumb bg-[#fafafa]': disabled(),
-          'shadow-thumb-active': value() && !disabled(),
+          'shadow-thumb-active': modelValue() && !disabled(),
           'bg-neutral-0 group-hover:bg-white focus-visible:bg-white':
             !disabled(),
         }"
@@ -62,7 +64,7 @@ export class SwitchComponent implements ControlValueAccessor {
   label = input('Toggle');
   disabled = input(false);
 
-  value = signal(false);
+  modelValue = model(false);
   private internalDisabled = signal(false);
 
   isDisabled(): boolean {
@@ -72,8 +74,8 @@ export class SwitchComponent implements ControlValueAccessor {
   toggle(): void {
     if (this.isDisabled()) return;
 
-    this.value.set(!this.value());
-    this.onChange(this.value());
+    this.modelValue.update((value) => !value);
+    this.onChange(this.modelValue());
     this.onTouched();
   }
 
@@ -82,7 +84,7 @@ export class SwitchComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   writeValue(value: boolean): void {
-    this.value.set(value);
+    this.modelValue.set(value);
   }
 
   registerOnChange(fn: (value: boolean) => void): void {
