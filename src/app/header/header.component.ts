@@ -11,7 +11,30 @@ import { IconLogoComponent } from '../icon-logo/icon-logo.component';
   selector: 'bem-header',
   standalone: true,
   imports: [IconLogoComponent],
-  templateUrl: './header.component.html',
+  template: `
+    <header
+      class="rounded-10 bg-neutral-0 shadow-header flex items-center justify-between border border-neutral-200 px-150 py-100 dark:border-none dark:bg-neutral-800 dark:shadow-none"
+    >
+      <bem-icon-logo />
+
+      <button
+        id="theme-toggle"
+        title="Toggles light & dark"
+        [ariaLabel]="
+          isDarkTheme() === 'light' ? 'Toggle dark mode' : 'Toggle light mode'
+        "
+        aria-live="polite"
+        class="rounded-12 focus-visible:ring-ring inline-flex size-[50px] items-center justify-center bg-neutral-100 transition-all focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-neutral-700"
+        (click)="toggleTheme()"
+      >
+        @if (isDarkTheme() === 'light') {
+          <img src="icon-moon.svg" alt="" aria-hidden="true" />
+        } @else {
+          <img src="icon-sun.svg" alt="" aria-hidden="true" />
+        }
+      </button>
+    </header>
+  `,
   styles: `
     :host {
       display: block;
