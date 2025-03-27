@@ -20,8 +20,8 @@ export class ThemeService {
       this.document.documentElement.setAttribute('data-theme', 'dark');
       this.theme = 'dark';
     } else {
-      this.document.documentElement.setAttribute('data-theme', 'light');
-      this.theme = 'light';
+      this.document.documentElement.setAttribute('data-theme', 'dark');
+      this.theme = 'dark';
     }
   }
 
