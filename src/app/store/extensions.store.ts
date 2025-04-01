@@ -41,6 +41,14 @@ export const ExtensionStore = signalStore(
       patchState(store, { extensions: updatedExtensions });
       extensionsService.persistExtensions(updatedExtensions);
     },
+    removeExtension(extToRemove: Extension) {
+      const updatedExtensions = store
+        .extensions()
+        .filter((ext) => ext.name !== extToRemove.name);
+
+      patchState(store, { extensions: updatedExtensions });
+      extensionsService.persistExtensions(updatedExtensions);
+    },
   })),
   withComputed(({ extensions, activeFilter }) => ({
     filteredExtensions: computed(() => {

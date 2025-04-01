@@ -16,6 +16,7 @@ import { ExtensionStore } from '../store/extensions.store';
             [description]="extension.description"
             [isActive]="extension.isActive"
             (isActiveChange)="store.toggleExtensionActive(extension, $event)"
+            (extensionRemoved)="store.removeExtension(extension)"
           />
         </li>
       }
