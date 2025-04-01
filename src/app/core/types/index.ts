@@ -4,3 +4,5 @@ export type Extension = {
   description: string;
   isActive: boolean;
 };
+
+export type FilterType = 'active' | 'inactive' | undefined;
