@@ -4,13 +4,15 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+
 import { ThemeService } from '@core/services/theme/theme.service';
 import { IconLogoComponent } from '../icon-logo/icon-logo.component';
 
 @Component({
   selector: 'bem-header',
   standalone: true,
-  imports: [IconLogoComponent],
+  imports: [IconLogoComponent, NgOptimizedImage],
   template: `
     <header
       class="rounded-10 tablet:rounded-20 bg-neutral-0 shadow-header tablet:py-150 tablet:px-200 flex items-center justify-between border border-neutral-200 px-150 py-100 dark:border-none dark:bg-neutral-800 dark:shadow-none"
@@ -28,9 +30,23 @@ import { IconLogoComponent } from '../icon-logo/icon-logo.component';
         (click)="toggleTheme()"
       >
         @if (isDarkTheme() === 'light') {
-          <img src="icon-moon.svg" alt="" aria-hidden="true" />
+          <img
+            ngSrc="icon-moon.svg"
+            alt=""
+            aria-hidden="true"
+            width="22"
+            height="22"
+            priority
+          />
         } @else {
-          <img src="icon-sun.svg" alt="" aria-hidden="true" />
+          <img
+            ngSrc="icon-sun.svg"
+            alt=""
+            aria-hidden="true"
+            width="22"
+            height="22"
+            priority
+          />
         }
       </button>
     </header>

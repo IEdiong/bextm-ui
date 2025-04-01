@@ -4,7 +4,7 @@ import { ExtensionStore } from '../store/extensions.store';
 import {
   animate,
   query,
-  stagger,
+  // stagger,
   style,
   transition,
   trigger,
@@ -36,16 +36,16 @@ import {
   animations: [
     trigger('listAnimation', [
       transition('* <=> *', [
-        query(
-          ':enter',
-          [
-            style({ opacity: 0, scale: 0.5 }),
-            stagger(50, [
-              animate('300ms ease-out', style({ opacity: 1, scale: 1 })),
-            ]),
-          ],
-          { optional: true },
-        ),
+        // query(
+        //   ':enter',
+        //   [
+        //     style({ opacity: 0, scale: 0.5 }),
+        //     stagger(50, [
+        //       animate('300ms ease-out', style({ opacity: 1, scale: 1 })),
+        //     ]),
+        //   ],
+        //   { optional: true },
+        // ),
         query(
           ':leave',
           [animate('300ms ease-out', style({ opacity: 0, scale: 0.5 }))],
