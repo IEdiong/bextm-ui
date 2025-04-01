@@ -1,20 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  inject,
   OnInit,
   signal,
 } from '@angular/core';
 import { CardComponent } from '../card/card.component';
-import data from '../../../data/data.json';
 import { ActivatedRoute, Router } from '@angular/router';
-
-interface IExtension {
-  logo: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-}
+import { ExtensionStore } from '../store/extensions.store';
 
 @Component({
   selector: 'bem-extension-list',
@@ -22,13 +15,14 @@ interface IExtension {
   imports: [CardComponent],
   template: `
     <ul class="extensions-container">
-      @for (extension of filteredExtensionList(); track extension.name) {
+      @for (extension of store.extensions(); track extension.name) {
         <li>
           <bem-card
             [logo]="extension.logo"
             [name]="extension.name"
             [description]="extension.description"
             [isActive]="extension.isActive"
+            (isActiveChange)="store.toggleExtensionActive(extension, $event)"
           />
         </li>
       }
@@ -43,24 +37,25 @@ interface IExtension {
 })
 export class ExtensionListComponent implements OnInit {
   // Keep the original extensions as a signal
-  private extensions = signal<IExtension[]>(data);
+  // private extensions = signal<IExtension[]>(data);
+  readonly store = inject(ExtensionStore);
 
   // Create a signal for the current filter
   private filterSignal = signal<'active' | 'inactive' | undefined>(undefined);
 
   // Use computed to create a reactive filtered list
-  filteredExtensionList = computed(() => {
-    const filter = this.filterSignal();
-    const allExtensions = this.extensions();
+  // filteredExtensionList = computed(() => {
+  //   const filter = this.filterSignal();
+  //   const allExtensions = this.extensions();
 
-    if (filter === 'active') {
-      return allExtensions.filter((extension) => extension.isActive);
-    } else if (filter === 'inactive') {
-      return allExtensions.filter((extension) => !extension.isActive);
-    }
+  //   if (filter === 'active') {
+  //     return allExtensions.filter((extension) => extension.isActive);
+  //   } else if (filter === 'inactive') {
+  //     return allExtensions.filter((extension) => !extension.isActive);
+  //   }
 
-    return allExtensions;
-  });
+  //   return allExtensions;
+  // });
 
   constructor(
     private router: Router,

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
 import { SwitchComponent } from '../switch/switch.component';
 
 @Component({
@@ -25,7 +30,7 @@ import { SwitchComponent } from '../switch/switch.component';
           Remove
         </button>
 
-        <bem-switch [modelValue]="isActive()" />
+        <bem-switch [(modelValue)]="isActive" />
       </div>
     </article>
   `,
@@ -42,5 +47,5 @@ export class CardComponent {
   description = input(
     'Quickly inspect page layouts and visualize element boundaries.',
   );
-  isActive = input(false);
+  isActive = model(false);
 }
