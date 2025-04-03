@@ -4,7 +4,6 @@ import { ExtensionStore } from '../store/extensions.store';
 import {
   animate,
   query,
-  // stagger,
   style,
   transition,
   trigger,
@@ -19,13 +18,18 @@ import {
       class="extensions-container"
       [@listAnimation]="store.filteredExtensions().length"
     >
-      @for (extension of store.filteredExtensions(); track extension.name) {
+      @for (
+        extension of store.filteredExtensions();
+        track extension.name;
+        let i = $index
+      ) {
         <li [@itemAnimation]>
           <bem-card
             [logo]="extension.logo"
             [name]="extension.name"
             [description]="extension.description"
             [isActive]="extension.isActive"
+            [prioritize]="i < 9"
             (isActiveChange)="store.toggleExtensionActive(extension, $event)"
             (extensionRemoved)="store.removeExtension(extension)"
           />
