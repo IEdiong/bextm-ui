@@ -39,7 +39,7 @@ gsap.registerPlugin(Flip);
             [description]="extension.description"
             [isActive]="extension.isActive"
             [prioritize]="i < 9"
-            (isActiveChange)="store.toggleExtensionActive(extension, $event)"
+            (isActiveChange)="handleExtensionToggle(extension, $event)"
             (extensionRemoved)="handleExtensionRemoved(extension)"
           />
         </li>
@@ -70,7 +70,10 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
   // Add a flag to track removal operations
   private isRemovalInProgress = false;
 
-  ngAfterViewInit() {
+  // Add a flag to track toggle operations that might filter out items
+  private isToggleFilterInProgress = false;
+
+  ngAfterViewInit(): void {
     // Initial animation of items
     this.animateItemsIn();
 
@@ -91,7 +94,8 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
           // If this is a filter change (not from removal), animate items in
           if (
             this.extensionItems?.length !== prevCount &&
-            !this.isRemovalInProgress
+            !this.isRemovalInProgress &&
+            !this.isToggleFilterInProgress
           ) {
             this.animateItemsIn();
           }
@@ -100,7 +104,7 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.observer) {
       this.observer.disconnect();
     }
@@ -110,7 +114,7 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  handleExtensionRemoved(extension: Extension) {
+  handleExtensionRemoved(extension: Extension): void {
     // Set flag to prevent filter animation from triggering
     this.isRemovalInProgress = true;
 
@@ -184,7 +188,89 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private animateItemsIn() {
+  handleExtensionToggle(extension: Extension, isActive: boolean): void {
+    // Check if this toggle might cause the extension to be filtered out
+    const currentFilter = this.store.activeFilter();
+    const willBeFilteredOut =
+      (currentFilter === 'active' && !isActive) ||
+      (currentFilter === 'inactive' && isActive);
+
+    if (willBeFilteredOut) {
+      // Set flag to prevent default animation
+      this.isToggleFilterInProgress = true;
+
+      // Find the element for this extension
+      const element = this.extensionItems.find((item) => {
+        const cardElement = item.nativeElement.querySelector('bem-card');
+        return (
+          cardElement &&
+          cardElement.getAttribute('ng-reflect-name') === extension.name
+        );
+      })?.nativeElement;
+
+      if (element) {
+        // Store positions of all items before removal
+        const items = this.extensionItems
+          .toArray()
+          .map((ref) => ref.nativeElement);
+
+        const positions = items.map((item) => {
+          const rect = item.getBoundingClientRect();
+          return { element: item, left: rect.left, top: rect.top };
+        });
+
+        // Update the store to toggle the extension
+        this.store.toggleExtensionActive(extension, isActive);
+
+        // After DOM update, animate items to their new positions
+        setTimeout(() => {
+          const currentItems = this.extensionItems
+            .toArray()
+            .map((ref) => ref.nativeElement);
+
+          // For each current item, find its previous position
+          currentItems.forEach((item, index) => {
+            const prevPosition = positions.find((pos) => pos.element === item);
+            if (prevPosition) {
+              const rect = item.getBoundingClientRect();
+              const deltaX = prevPosition.left - rect.left;
+              const deltaY = prevPosition.top - rect.top;
+
+              // Set initial position (where it was before)
+              gsap.set(item, { x: deltaX, y: deltaY });
+
+              // Animate to new position with stagger based on grid distance
+              gsap.to(item, {
+                x: 0,
+                y: 0,
+                duration: 0.5,
+                ease: 'power2.out',
+                delay: index * 0.05,
+                onComplete:
+                  index === currentItems.length - 1
+                    ? () => {
+                        // Reset the flag after animation completes
+                        this.isToggleFilterInProgress = false;
+                      }
+                    : undefined,
+              });
+            }
+          });
+
+          // If no items to animate, reset the flag
+          if (currentItems.length === 0) {
+            this.isToggleFilterInProgress = false;
+          }
+        }, 0);
+        return; // Skip the default store update
+      }
+    }
+
+    // If not being filtered out or element not found, just update the store
+    this.store.toggleExtensionActive(extension, isActive);
+  }
+
+  private animateItemsIn(): void {
     if (this.timeline) {
       this.timeline.kill();
     }
@@ -206,12 +292,13 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private setupObserver() {
+  private setupObserver(): void {
     // Create a MutationObserver to watch for changes to the list
     this.observer = new MutationObserver((mutations) => {
-      // Only animate if not currently handling a removal
+      // Only animate if not currently handling a removal or toggle filter
       if (
         !this.isRemovalInProgress &&
+        !this.isToggleFilterInProgress &&
         mutations.some(
           (mutation) =>
             mutation.type === 'childList' &&
