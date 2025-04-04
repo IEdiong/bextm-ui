@@ -40,7 +40,7 @@ gsap.registerPlugin(Flip);
             [isActive]="extension.isActive"
             [prioritize]="i < 9"
             (isActiveChange)="store.toggleExtensionActive(extension, $event)"
-            (extensionRemoved)="handleExtensionRemoved(extension, $event)"
+            (extensionRemoved)="handleExtensionRemoved(extension)"
           />
         </li>
       }
@@ -67,6 +67,9 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
   private timeline: gsap.core.Timeline | null = null;
   private observer: MutationObserver | null = null;
 
+  // Add a flag to track removal operations
+  private isRemovalInProgress = false;
+
   ngAfterViewInit() {
     // Initial animation of items
     this.animateItemsIn();
@@ -77,10 +80,22 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     // Use runInInjectionContext to provide the injection context for effect
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        // Access the signal to track it
+        // Store previous count to determine if this is a filter change
+        const prevCount = this.extensionItems?.length || 0;
+
+        // Access the signal to track it - we need this to trigger the effect when it changes
         this.store.filteredExtensions();
+
         // Give time for DOM to update before animating
-        setTimeout(() => this.animateItemsIn(), 0);
+        setTimeout(() => {
+          // If this is a filter change (not from removal), animate items in
+          if (
+            this.extensionItems?.length !== prevCount &&
+            !this.isRemovalInProgress
+          ) {
+            this.animateItemsIn();
+          }
+        }, 0);
       });
     });
   }
@@ -95,20 +110,25 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  handleExtensionRemoved(extension: Extension, event: MouseEvent | unknown) {
-    // Get the element that will be removed
-    const element =
-      (event as MouseEvent)?.target instanceof HTMLElement
-        ? ((event as MouseEvent).target as HTMLElement)?.closest('li')
-        : this.extensionItems.find((item) =>
-            item.nativeElement.contains((event as MouseEvent)?.target),
-          )?.nativeElement;
+  handleExtensionRemoved(extension: Extension) {
+    // Set flag to prevent filter animation from triggering
+    this.isRemovalInProgress = true;
+
+    // Find the element for this extension
+    const element = this.extensionItems.find((item) => {
+      const cardElement = item.nativeElement.querySelector('bem-card');
+      return (
+        cardElement &&
+        cardElement.getAttribute('ng-reflect-name') === extension.name
+      );
+    })?.nativeElement;
 
     if (element) {
       // Store positions of all items before removal
       const items = this.extensionItems
         .toArray()
         .map((ref) => ref.nativeElement);
+
       const positions = items.map((item) => {
         const rect = item.getBoundingClientRect();
         return { element: item, left: rect.left, top: rect.top };
@@ -141,12 +161,26 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
               duration: 0.5,
               ease: 'power2.out',
               delay: index * 0.05,
+              onComplete:
+                index === currentItems.length - 1
+                  ? () => {
+                      // Reset the flag after animation completes
+                      this.isRemovalInProgress = false;
+                    }
+                  : undefined,
             });
           }
         });
+
+        // If no items to animate, reset the flag
+        if (currentItems.length === 0) {
+          this.isRemovalInProgress = false;
+        }
       }, 0);
     } else {
       this.store.removeExtension(extension);
+      // Reset the flag since we're not doing custom animation
+      this.isRemovalInProgress = false;
     }
   }
 
@@ -175,8 +209,9 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
   private setupObserver() {
     // Create a MutationObserver to watch for changes to the list
     this.observer = new MutationObserver((mutations) => {
-      // If nodes were added or removed, animate the current items
+      // Only animate if not currently handling a removal
       if (
+        !this.isRemovalInProgress &&
         mutations.some(
           (mutation) =>
             mutation.type === 'childList' &&
