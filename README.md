@@ -44,7 +44,8 @@ Users should be able to:
 - Flexbox
 - CSS Grid
 - Mobile-first workflow
-- Angular Animations
+- [GSAP](https://gsap.com/) - Animation library
+- [NgRx Signals](https://ngrx.io/guide/signals/) - State Management library
 - [TailwindCSS v4](https://tailwindcss.com/) - TailwindCSS
 - [Angular](https://angular.dev/) - Frontend framework
 
@@ -90,6 +91,8 @@ Here's a more detailed breakdown:
 </div>
 ```
 
+> Other things learnt would be published subsequently in my blog posts.
+
 ### Continued development
 
 - Add some tests and documentation with storybook
@@ -97,4 +100,4 @@ Here's a more detailed breakdown:
 ## Author
 
 - Frontend Mentor - [@iediong](https://www.frontendmentor.io/profile/iediong)
-- Twitter - [@iediong](https://www.twitter.com/yourusername)
+- Twitter - [@iediong](https://www.twitter.com/iediong)
