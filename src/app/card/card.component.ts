@@ -34,7 +34,7 @@ import { SwitchComponent } from '../switch/switch.component';
 
       <div class="flex items-center justify-between">
         <button
-          class="dark:text-neutral-0 hover:text-neutral-0 focus-visible:ring-ring inline-flex items-center justify-center rounded-full border border-neutral-200 px-200 py-100 transition-all duration-300 hover:border-transparent hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none dark:border-neutral-600"
+          class="dark:text-neutral-0 hover:text-neutral-0 focus-visible:ring-ring dark:focus-visible:outline-ring focus-visible:border-neutral-0 inline-flex items-center justify-center rounded-full border border-neutral-200 px-200 py-100 text-neutral-900 transition-all duration-300 hover:border-transparent hover:bg-red-700 focus-visible:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-700 dark:border-neutral-600 dark:focus-visible:border-neutral-900 dark:focus-visible:bg-neutral-600 dark:focus-visible:outline-2 dark:focus-visible:outline-offset-1"
           (click)="remove()"
           [attr.aria-label]="'Remove ' + name() + ' extension'"
         >

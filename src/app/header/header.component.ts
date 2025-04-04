@@ -26,7 +26,7 @@ import { IconLogoComponent } from '../icon-logo/icon-logo.component';
           isDarkTheme() === 'light' ? 'Toggle dark mode' : 'Toggle light mode'
         "
         aria-live="polite"
-        class="rounded-12 focus-visible:ring-ring inline-flex size-[50px] items-center justify-center bg-neutral-100 transition-all duration-300 hover:bg-neutral-300 focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-neutral-700 dark:hover:bg-neutral-600"
+        class="rounded-12 inline-flex size-[50px] items-center justify-center bg-neutral-100 transition-all duration-300 hover:bg-neutral-300 focus-visible:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:focus-visible:bg-neutral-600 dark:focus-visible:outline-offset-2 dark:focus-visible:outline-red-400"
         (click)="toggleTheme()"
       >
         @if (isDarkTheme() === 'light') {
