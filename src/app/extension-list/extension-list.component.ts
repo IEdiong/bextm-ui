@@ -18,9 +18,6 @@ import { CardComponent } from '../card/card.component';
 import { ExtensionStore } from '../store/extensions.store';
 import { Extension } from '../core/types';
 
-// Register the plugin
-gsap.registerPlugin(Flip);
-
 @Component({
   selector: 'bem-extension-list',
   standalone: true,
@@ -74,6 +71,9 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
   private isToggleFilterInProgress = false;
 
   ngAfterViewInit(): void {
+    // Register the plugin
+    gsap.registerPlugin(Flip);
+
     // Initial animation of items
     this.animateItemsIn();
 
