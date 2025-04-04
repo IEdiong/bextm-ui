@@ -12,7 +12,6 @@ import {
   Injector,
 } from '@angular/core';
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
 
 import { CardComponent } from '../card/card.component';
 import { ExtensionStore } from '../store/extensions.store';
@@ -71,9 +70,6 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
   private isToggleFilterInProgress = false;
 
   ngAfterViewInit(): void {
-    // Register the plugin
-    gsap.registerPlugin(Flip);
-
     // Initial animation of items
     this.animateItemsIn();
 
@@ -118,12 +114,14 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     // Set flag to prevent filter animation from triggering
     this.isRemovalInProgress = true;
 
-    // Find the element for this extension
+    // Find the element for this extension using data attribute
     const element = this.extensionItems.find((item) => {
       const cardElement = item.nativeElement.querySelector('bem-card');
       return (
         cardElement &&
-        cardElement.getAttribute('ng-reflect-name') === extension.name
+        cardElement.querySelector(
+          '[data-extension-name="' + extension.name + '"]',
+        )
       );
     })?.nativeElement;
 
@@ -199,12 +197,14 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
       // Set flag to prevent default animation
       this.isToggleFilterInProgress = true;
 
-      // Find the element for this extension
+      // Find the element for this extension using data attribute
       const element = this.extensionItems.find((item) => {
         const cardElement = item.nativeElement.querySelector('bem-card');
         return (
           cardElement &&
-          cardElement.getAttribute('ng-reflect-name') === extension.name
+          cardElement.querySelector(
+            '[data-extension-name="' + extension.name + '"]',
+          )
         );
       })?.nativeElement;
 

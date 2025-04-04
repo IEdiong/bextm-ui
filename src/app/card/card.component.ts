@@ -16,6 +16,7 @@ import { SwitchComponent } from '../switch/switch.component';
   template: `
     <article
       class="rounded-20 bg-neutral-0 shadow-card flex h-[200px] flex-col justify-between border border-neutral-200 p-250 transition-all duration-300 dark:border-neutral-600 dark:bg-neutral-800 dark:shadow-none"
+      [attr.data-extension-name]="name()"
     >
       <div class="flex items-start justify-start gap-x-200">
         <img
