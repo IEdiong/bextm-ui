@@ -22,25 +22,31 @@ import { Extension } from '../core/types';
   standalone: true,
   imports: [CardComponent],
   template: `
-    <ul class="extensions-container">
-      @for (
-        extension of store.filteredExtensions();
-        track extension.name;
-        let i = $index
-      ) {
-        <li #extensionItem>
-          <bem-card
-            [logo]="extension.logo"
-            [name]="extension.name"
-            [description]="extension.description"
-            [isActive]="extension.isActive"
-            [prioritize]="i < 9"
-            (isActiveChange)="handleExtensionToggle(extension, $event)"
-            (extensionRemoved)="handleExtensionRemoved(extension)"
-          />
-        </li>
-      }
-    </ul>
+    @if (store.filteredExtensions().length > 0) {
+      <ul class="extensions-container">
+        @for (
+          extension of store.filteredExtensions();
+          track extension.name;
+          let i = $index
+        ) {
+          <li #extensionItem>
+            <bem-card
+              [logo]="extension.logo"
+              [name]="extension.name"
+              [description]="extension.description"
+              [isActive]="extension.isActive"
+              [prioritize]="i < 9"
+              (isActiveChange)="handleExtensionToggle(extension, $event)"
+              (extensionRemoved)="handleExtensionRemoved(extension)"
+            />
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-center text-2xl text-white/80 italic">
+        No extensions found
+      </p>
+    }
   `,
   styles: `
     :host {
