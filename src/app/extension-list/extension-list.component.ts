@@ -25,7 +25,7 @@ import { ListAnimationDirective } from '@shared/directives';
         class="extensions-container"
         bemListAnimation
         [animationConfig]="{
-          duration: 0.8,
+          duration: 0.5,
           stagger: 0.1,
           ease: 'power2.out',
           initialY: 30,
@@ -278,54 +278,54 @@ export class ExtensionListComponent implements AfterViewInit {
     // If not being filtered out or element not found, just update the store
     this.store.toggleExtensionActive(extension, isActive);
   }
-
-  // private animateItemsIn(): void {
-  //   if (this.timeline) {
-  //     this.timeline.kill();
-  //   }
-
-  //   const items = this.extensionItems.toArray().map((ref) => ref.nativeElement);
-
-  //   this.timeline = gsap.timeline();
-
-  //   // Reset items to initial state
-  //   gsap.set(items, { opacity: 0, y: 20 });
-
-  //   // Animate items in with stagger
-  //   this.timeline.to(items, {
-  //     opacity: 1,
-  //     y: 0,
-  //     duration: 0.5,
-  //     stagger: 0.08,
-  //     ease: 'power2.out',
-  //   });
-  // }
-
-  // private setupObserver(): void {
-  //   // Create a MutationObserver to watch for changes to the list
-  //   this.observer = new MutationObserver((mutations) => {
-  //     // Only animate if not currently handling a removal or toggle filter
-  //     if (
-  //       !this.isRemovalInProgress &&
-  //       !this.isToggleFilterInProgress &&
-  //       mutations.some(
-  //         (mutation) =>
-  //           mutation.type === 'childList' &&
-  //           (mutation.addedNodes.length > 0 ||
-  //             mutation.removedNodes.length > 0),
-  //       )
-  //     ) {
-  //       this.animateItemsIn();
-  //     }
-  //   });
-
-  //   // Start observing the list container
-  //   const container = this.extensionItems.first?.nativeElement.parentElement;
-  //   if (container) {
-  //     this.observer.observe(container, {
-  //       childList: true,
-  //       subtree: false,
-  //     });
-  //   }
-  // }
 }
+
+// private animateItemsIn(): void {
+//   if (this.timeline) {
+//     this.timeline.kill();
+//   }
+
+//   const items = this.extensionItems.toArray().map((ref) => ref.nativeElement);
+
+//   this.timeline = gsap.timeline();
+
+//   // Reset items to initial state
+//   gsap.set(items, { opacity: 0, y: 20 });
+
+//   // Animate items in with stagger
+//   this.timeline.to(items, {
+//     opacity: 1,
+//     y: 0,
+//     duration: 0.5,
+//     stagger: 0.08,
+//     ease: 'power2.out',
+//   });
+// }
+
+// private setupObserver(): void {
+//   // Create a MutationObserver to watch for changes to the list
+//   this.observer = new MutationObserver((mutations) => {
+//     // Only animate if not currently handling a removal or toggle filter
+//     if (
+//       !this.isRemovalInProgress &&
+//       !this.isToggleFilterInProgress &&
+//       mutations.some(
+//         (mutation) =>
+//           mutation.type === 'childList' &&
+//           (mutation.addedNodes.length > 0 ||
+//             mutation.removedNodes.length > 0),
+//       )
+//     ) {
+//       this.animateItemsIn();
+//     }
+//   });
+
+//   // Start observing the list container
+//   const container = this.extensionItems.first?.nativeElement.parentElement;
+//   if (container) {
+//     this.observer.observe(container, {
+//       childList: true,
+//       subtree: false,
+//     });
+//   }
+// }
