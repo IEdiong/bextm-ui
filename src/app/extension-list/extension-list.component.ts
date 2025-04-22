@@ -13,7 +13,7 @@ import gsap from 'gsap';
 import { CardComponent } from '../card/card.component';
 import { ExtensionStore } from '../store/extensions.store';
 import { Extension } from '../core/types';
-import { ListAnimationDirective } from '@core/directives';
+import { ListAnimationDirective } from '@shared/directives';
 
 @Component({
   selector: 'bem-extension-list',
@@ -26,7 +26,7 @@ import { ListAnimationDirective } from '@core/directives';
         bemListAnimation
         [animationConfig]="{
           duration: 0.8,
-          stagger: 0.08,
+          stagger: 0.1,
           ease: 'power2.out',
           initialY: 30,
         }"
