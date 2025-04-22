@@ -6,9 +6,6 @@ import {
   ViewChildren,
   QueryList,
   AfterViewInit,
-  OnDestroy,
-  effect,
-  runInInjectionContext,
   Injector,
 } from '@angular/core';
 import gsap from 'gsap';
@@ -16,14 +13,24 @@ import gsap from 'gsap';
 import { CardComponent } from '../card/card.component';
 import { ExtensionStore } from '../store/extensions.store';
 import { Extension } from '../core/types';
+import { ListAnimationDirective } from '@core/directives';
 
 @Component({
   selector: 'bem-extension-list',
   standalone: true,
-  imports: [CardComponent],
+  imports: [CardComponent, ListAnimationDirective],
   template: `
     @if (store.filteredExtensions().length > 0) {
-      <ul class="extensions-container">
+      <ul
+        class="extensions-container"
+        bemListAnimation
+        [animationConfig]="{
+          duration: 0.8,
+          stagger: 0.08,
+          ease: 'power2.out',
+          initialY: 30,
+        }"
+      >
         @for (
           extension of store.filteredExtensions();
           track extension.name;
@@ -61,13 +68,13 @@ import { Extension } from '../core/types';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExtensionListComponent implements AfterViewInit, OnDestroy {
+export class ExtensionListComponent implements AfterViewInit {
   readonly store = inject(ExtensionStore);
   private readonly injector = inject(Injector);
   @ViewChildren('extensionItem') extensionItems!: QueryList<ElementRef>;
 
-  private timeline: gsap.core.Timeline | null = null;
-  private observer: MutationObserver | null = null;
+  // private timeline: gsap.core.Timeline | null = null;
+  // private observer: MutationObserver | null = null;
 
   // Add a flag to track removal operations
   private isRemovalInProgress = false;
@@ -77,44 +84,40 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     // Initial animation of items
-    this.animateItemsIn();
-
+    // this.animateItemsIn();
     // Set up observer to detect DOM changes
-    this.setupObserver();
-
+    // this.setupObserver();
     // Use runInInjectionContext to provide the injection context for effect
-    runInInjectionContext(this.injector, () => {
-      effect(() => {
-        // Store previous count to determine if this is a filter change
-        const prevCount = this.extensionItems?.length || 0;
-
-        // Access the signal to track it - we need this to trigger the effect when it changes
-        this.store.filteredExtensions();
-
-        // Give time for DOM to update before animating
-        setTimeout(() => {
-          // If this is a filter change (not from removal), animate items in
-          if (
-            this.extensionItems?.length !== prevCount &&
-            !this.isRemovalInProgress &&
-            !this.isToggleFilterInProgress
-          ) {
-            this.animateItemsIn();
-          }
-        }, 0);
-      });
-    });
+    // runInInjectionContext(this.injector, () => {
+    //   effect(() => {
+    //     // Store previous count to determine if this is a filter change
+    //     const prevCount = this.extensionItems?.length || 0;
+    //     // Access the signal to track it - we need this to trigger the effect when it changes
+    //     this.store.filteredExtensions();
+    //     // Give time for DOM to update before animating
+    //     setTimeout(() => {
+    //       // If this is a filter change (not from removal), animate items in
+    //       if (
+    //         this.extensionItems?.length !== prevCount &&
+    //         !this.isRemovalInProgress &&
+    //         !this.isToggleFilterInProgress
+    //       ) {
+    //         this.animateItemsIn();
+    //       }
+    //     }, 0);
+    //   });
+    // });
   }
 
-  ngOnDestroy(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+  // ngOnDestroy(): void {
+  //   if (this.observer) {
+  //     this.observer.disconnect();
+  //   }
 
-    if (this.timeline) {
-      this.timeline.kill();
-    }
-  }
+  //   if (this.timeline) {
+  //     this.timeline.kill();
+  //   }
+  // }
 
   handleExtensionRemoved(extension: Extension): void {
     // Set flag to prevent filter animation from triggering
@@ -276,53 +279,53 @@ export class ExtensionListComponent implements AfterViewInit, OnDestroy {
     this.store.toggleExtensionActive(extension, isActive);
   }
 
-  private animateItemsIn(): void {
-    if (this.timeline) {
-      this.timeline.kill();
-    }
+  // private animateItemsIn(): void {
+  //   if (this.timeline) {
+  //     this.timeline.kill();
+  //   }
 
-    const items = this.extensionItems.toArray().map((ref) => ref.nativeElement);
+  //   const items = this.extensionItems.toArray().map((ref) => ref.nativeElement);
 
-    this.timeline = gsap.timeline();
+  //   this.timeline = gsap.timeline();
 
-    // Reset items to initial state
-    gsap.set(items, { opacity: 0, y: 20 });
+  //   // Reset items to initial state
+  //   gsap.set(items, { opacity: 0, y: 20 });
 
-    // Animate items in with stagger
-    this.timeline.to(items, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-      stagger: 0.08,
-      ease: 'power2.out',
-    });
-  }
+  //   // Animate items in with stagger
+  //   this.timeline.to(items, {
+  //     opacity: 1,
+  //     y: 0,
+  //     duration: 0.5,
+  //     stagger: 0.08,
+  //     ease: 'power2.out',
+  //   });
+  // }
 
-  private setupObserver(): void {
-    // Create a MutationObserver to watch for changes to the list
-    this.observer = new MutationObserver((mutations) => {
-      // Only animate if not currently handling a removal or toggle filter
-      if (
-        !this.isRemovalInProgress &&
-        !this.isToggleFilterInProgress &&
-        mutations.some(
-          (mutation) =>
-            mutation.type === 'childList' &&
-            (mutation.addedNodes.length > 0 ||
-              mutation.removedNodes.length > 0),
-        )
-      ) {
-        this.animateItemsIn();
-      }
-    });
+  // private setupObserver(): void {
+  //   // Create a MutationObserver to watch for changes to the list
+  //   this.observer = new MutationObserver((mutations) => {
+  //     // Only animate if not currently handling a removal or toggle filter
+  //     if (
+  //       !this.isRemovalInProgress &&
+  //       !this.isToggleFilterInProgress &&
+  //       mutations.some(
+  //         (mutation) =>
+  //           mutation.type === 'childList' &&
+  //           (mutation.addedNodes.length > 0 ||
+  //             mutation.removedNodes.length > 0),
+  //       )
+  //     ) {
+  //       this.animateItemsIn();
+  //     }
+  //   });
 
-    // Start observing the list container
-    const container = this.extensionItems.first?.nativeElement.parentElement;
-    if (container) {
-      this.observer.observe(container, {
-        childList: true,
-        subtree: false,
-      });
-    }
-  }
+  //   // Start observing the list container
+  //   const container = this.extensionItems.first?.nativeElement.parentElement;
+  //   if (container) {
+  //     this.observer.observe(container, {
+  //       childList: true,
+  //       subtree: false,
+  //     });
+  //   }
+  // }
 }
