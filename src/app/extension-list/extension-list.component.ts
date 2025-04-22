@@ -7,6 +7,7 @@ import {
   QueryList,
   AfterViewInit,
   Injector,
+  viewChild,
 } from '@angular/core';
 import gsap from 'gsap';
 
@@ -30,6 +31,7 @@ import { ListAnimationDirective } from '@shared/directives';
           ease: 'power2.out',
           initialY: 30,
         }"
+        #animationList="listAnimation"
       >
         @for (
           extension of store.filteredExtensions();
@@ -70,9 +72,10 @@ import { ListAnimationDirective } from '@shared/directives';
 })
 export class ExtensionListComponent implements AfterViewInit {
   readonly store = inject(ExtensionStore);
-  private readonly injector = inject(Injector);
   @ViewChildren('extensionItem') extensionItems!: QueryList<ElementRef>;
+  animationList = viewChild<ListAnimationDirective>('animationList');
 
+  private readonly injector = inject(Injector);
   // private timeline: gsap.core.Timeline | null = null;
   // private observer: MutationObserver | null = null;
 
@@ -92,11 +95,11 @@ export class ExtensionListComponent implements AfterViewInit {
     //   effect(() => {
     //     // Store previous count to determine if this is a filter change
     //     const prevCount = this.extensionItems?.length || 0;
-    //     // Access the signal to track it - we need this to trigger the effect when it changes
+    // Access the signal to track it - we need this to trigger the effect when it changes
     //     this.store.filteredExtensions();
-    //     // Give time for DOM to update before animating
+    // Give time for DOM to update before animating
     //     setTimeout(() => {
-    //       // If this is a filter change (not from removal), animate items in
+    // If this is a filter change (not from removal), animate items in
     //       if (
     //         this.extensionItems?.length !== prevCount &&
     //         !this.isRemovalInProgress &&
@@ -120,78 +123,22 @@ export class ExtensionListComponent implements AfterViewInit {
   // }
 
   handleExtensionRemoved(extension: Extension): void {
-    // Set flag to prevent filter animation from triggering
-    this.isRemovalInProgress = true;
-
-    // Find the element for this extension using data attribute
-    const element = this.extensionItems.find((item) => {
-      const cardElement = item.nativeElement.querySelector('bem-card');
-      return (
-        cardElement &&
-        cardElement.querySelector(
-          '[data-extension-name="' + extension.name + '"]',
-        )
-      );
-    })?.nativeElement;
+    // Find the element for this extension
+    const element = this.findExtensionElement(extension);
 
     if (element) {
-      // Store positions of all items before removal
-      const items = this.extensionItems
-        .toArray()
-        .map((ref) => ref.nativeElement);
-
-      const positions = items.map((item) => {
-        const rect = item.getBoundingClientRect();
-        return { element: item, left: rect.left, top: rect.top };
-      });
+      // Prepare for removal animation
+      this.animationList()?.prepareForRemoval();
 
       // Remove the extension from the store
       this.store.removeExtension(extension);
 
       // After DOM update, animate items to their new positions
       setTimeout(() => {
-        const currentItems = this.extensionItems
-          .toArray()
-          .map((ref) => ref.nativeElement);
-
-        // For each current item, find its previous position
-        currentItems.forEach((item, index) => {
-          const prevPosition = positions.find((pos) => pos.element === item);
-          if (prevPosition) {
-            const rect = item.getBoundingClientRect();
-            const deltaX = prevPosition.left - rect.left;
-            const deltaY = prevPosition.top - rect.top;
-
-            // Set initial position (where it was before)
-            gsap.set(item, { x: deltaX, y: deltaY });
-
-            // Animate to new position with stagger based on grid distance
-            gsap.to(item, {
-              x: 0,
-              y: 0,
-              duration: 0.5,
-              ease: 'power2.out',
-              delay: index * 0.05,
-              onComplete:
-                index === currentItems.length - 1
-                  ? () => {
-                      // Reset the flag after animation completes
-                      this.isRemovalInProgress = false;
-                    }
-                  : undefined,
-            });
-          }
-        });
-
-        // If no items to animate, reset the flag
-        if (currentItems.length === 0) {
-          this.isRemovalInProgress = false;
-        }
+        this.animationList()?.animatePositions();
       }, 0);
     } else {
       this.store.removeExtension(extension);
-      // Reset the flag since we're not doing custom animation
-      this.isRemovalInProgress = false;
     }
   }
 
@@ -278,6 +225,29 @@ export class ExtensionListComponent implements AfterViewInit {
     // If not being filtered out or element not found, just update the store
     this.store.toggleExtensionActive(extension, isActive);
   }
+
+  /**
+   * Finds the HTML element associated with a given extension.
+   *
+   * This method searches through the list of extension items to locate an element
+   * that matches the specified extension. It looks for a `bem-card` element within
+   * each item's native element and checks for a child element with a `data-extension-name`
+   * attribute matching the extension's name.
+   *
+   * @param extension - The extension object containing the name to search for.
+   * @returns The HTML element corresponding to the extension if found, or `null` if not found.
+   */
+  private findExtensionElement(extension: Extension): HTMLElement | null {
+    const item = this.extensionItems.find((item) => {
+      const cardElement = item.nativeElement.querySelector('bem-card');
+      return (
+        cardElement &&
+        cardElement.querySelector(`[data-extension-name="${extension.name}"]`)
+      );
+    });
+
+    return item?.nativeElement ?? null;
+  }
 }
 
 // private animateItemsIn(): void {
@@ -327,5 +297,81 @@ export class ExtensionListComponent implements AfterViewInit {
 //       childList: true,
 //       subtree: false,
 //     });
+//   }
+// }
+
+// onHandleExtensionRemoved(extension: Extension): void {
+//   // Set flag to prevent filter animation from triggering
+//   this.isRemovalInProgress = true;
+
+//   // Find the element for this extension using data attribute
+//   const element = this.extensionItems.find((item) => {
+//     const cardElement = item.nativeElement.querySelector('bem-card');
+//     return (
+//       cardElement &&
+//       cardElement.querySelector(
+//         '[data-extension-name="' + extension.name + '"]',
+//       )
+//     );
+//   })?.nativeElement;
+
+//   if (element) {
+//     // Store positions of all items before removal
+//     const items = this.extensionItems
+//       .toArray()
+//       .map((ref) => ref.nativeElement);
+
+//     const positions = items.map((item) => {
+//       const rect = item.getBoundingClientRect();
+//       return { element: item, left: rect.left, top: rect.top };
+//     });
+
+//     // Remove the extension from the store
+//     this.store.removeExtension(extension);
+
+//     // After DOM update, animate items to their new positions
+//     setTimeout(() => {
+//       const currentItems = this.extensionItems
+//         .toArray()
+//         .map((ref) => ref.nativeElement);
+
+//       // For each current item, find its previous position
+//       currentItems.forEach((item, index) => {
+//         const prevPosition = positions.find((pos) => pos.element === item);
+//         if (prevPosition) {
+//           const rect = item.getBoundingClientRect();
+//           const deltaX = prevPosition.left - rect.left;
+//           const deltaY = prevPosition.top - rect.top;
+
+//           // Set initial position (where it was before)
+//           gsap.set(item, { x: deltaX, y: deltaY });
+
+//           // Animate to new position with stagger based on grid distance
+//           gsap.to(item, {
+//             x: 0,
+//             y: 0,
+//             duration: 0.5,
+//             ease: 'power2.out',
+//             delay: index * 0.05,
+//             onComplete:
+//               index === currentItems.length - 1
+//                 ? () => {
+//                     // Reset the flag after animation completes
+//                     this.isRemovalInProgress = false;
+//                   }
+//                 : undefined,
+//           });
+//         }
+//       });
+
+//       // If no items to animate, reset the flag
+//       if (currentItems.length === 0) {
+//         this.isRemovalInProgress = false;
+//       }
+//     }, 0);
+//   } else {
+//     this.store.removeExtension(extension);
+//     // Reset the flag since we're not doing custom animation
+//     this.isRemovalInProgress = false;
 //   }
 // }

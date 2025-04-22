@@ -26,12 +26,16 @@ export interface ListAnimationConfig {
 @Directive({
   selector: '[bemListAnimation]',
   standalone: true,
+  exportAs: 'listAnimation',
 })
 export class ListAnimationDirective {
   animationConfig = input<ListAnimationConfig>({});
   itemSelector = input<string>('li');
 
   private timeline: gsap.core.Timeline | null = null;
+  private isAnimatingRemoval = false;
+  private previousPositions: Array<{ element: HTMLElement; rect: DOMRect }> =
+    [];
   private config = computed(() => ({
     duration: this.animationConfig().duration ?? 0.5,
     stagger: this.animationConfig().stagger ?? 0.08,
@@ -48,6 +52,82 @@ export class ListAnimationDirective {
       // Set up observer to detect changes in the list
       this.setupObserver();
     });
+  }
+
+  prepareForRemoval(): void {
+    this.isAnimatingRemoval = true;
+    this.savePositions();
+  }
+
+  animatePositions(): void {
+    const currentItems = this.getItems();
+
+    if (!this.config().animatePositions || !currentItems.length) {
+      // Reset flag if we are not animating
+      this.isAnimatingRemoval = false;
+      return;
+    }
+
+    currentItems.forEach((item, index) => {
+      const prevData = this.previousPositions.find(
+        (pos) => pos.element === item,
+      );
+
+      if (prevData) {
+        const prevRect = prevData.rect;
+        const newRect = item.getBoundingClientRect();
+
+        const deltaX = prevRect.left - newRect.left;
+        const deltaY = prevRect.top - newRect.top;
+
+        // Only animate if the position actually changed
+        if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+          // Set initial position (where it was before)
+          gsap.set(item, { x: deltaX, y: deltaY });
+
+          // Animate to new position with stagger based on grid distance
+          gsap.to(item, {
+            x: 0,
+            y: 0,
+            duration: this.config().duration,
+            ease: this.config().ease,
+            delay: index * (this.config().stagger / 2),
+            onComplete:
+              index === currentItems.length - 1
+                ? () => {
+                    // Reset the flag after animation completes
+                    this.isAnimatingRemoval = false;
+                  }
+                : undefined,
+          });
+        }
+      } else {
+        // New item that wasn't in previous positions
+        gsap.fromTo(
+          item,
+          { opacity: 0, y: this.config().initialY },
+          {
+            opacity: 1,
+            y: 0,
+            duration: this.config().duration,
+            ease: this.config().ease,
+            delay: index * this.config().stagger,
+          },
+        );
+      }
+    });
+
+    // If no items to animate, reset flag and return
+    if (currentItems.length === 0) {
+      this.isAnimatingRemoval = false;
+    }
+  }
+
+  private savePositions(): void {
+    this.previousPositions = this.getItems().map((element) => ({
+      element,
+      rect: element.getBoundingClientRect(),
+    }));
   }
 
   /**
@@ -107,6 +187,7 @@ export class ListAnimationDirective {
     const observer = new MutationObserver((mutations) => {
       // Only animate if not currently handling a removal or toggle filter
       if (
+        !this.isAnimatingRemoval &&
         mutations.some(
           (mutation) =>
             mutation.type === 'childList' &&
