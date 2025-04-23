@@ -4,6 +4,7 @@ import {
   Directive,
   ElementRef,
   input,
+  OnDestroy,
 } from '@angular/core';
 
 import gsap from 'gsap';
@@ -29,11 +30,12 @@ export interface ListAnimationConfig {
   standalone: true,
   exportAs: 'listAnimation',
 })
-export class ListAnimationDirective {
+export class ListAnimationDirective implements OnDestroy {
   animationConfig = input<ListAnimationConfig>({});
   itemSelector = input<string>('li');
 
   private timeline: gsap.core.Timeline | null = null;
+  private observer: MutationObserver | null = null;
   private isAnimatingRemoval = false;
   private previousPositions: Array<{ element: HTMLElement; rect: DOMRect }> =
     [];
@@ -53,6 +55,18 @@ export class ListAnimationDirective {
       // Set up observer to detect changes in the list
       this.setupObserver();
     });
+  }
+
+  ngOnDestroy(): void {
+    // Disconnect the observer if it exists
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    // Clean up GSAP timeline if it exists
+    if (this.timeline) {
+      this.timeline.kill();
+    }
   }
 
   prepareForRemoval(): void {
@@ -198,7 +212,7 @@ export class ListAnimationDirective {
    */
   private setupObserver(): void {
     // Create a MutationObserver to watch for changes in the list
-    const observer = new MutationObserver((mutations) => {
+    this.observer = new MutationObserver((mutations) => {
       // Only animate if not currently handling a removal or toggle filter
       if (
         !this.isAnimatingRemoval &&
@@ -216,7 +230,7 @@ export class ListAnimationDirective {
     // Observe the host element for child list changes
     const container = this.el.nativeElement;
     if (container) {
-      observer.observe(container, {
+      this.observer.observe(container, {
         childList: true,
         subtree: false,
       });
