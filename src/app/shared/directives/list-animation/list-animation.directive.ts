@@ -5,6 +5,7 @@ import {
   ElementRef,
   input,
 } from '@angular/core';
+
 import gsap from 'gsap';
 
 /**
@@ -121,6 +122,19 @@ export class ListAnimationDirective {
     if (currentItems.length === 0) {
       this.isAnimatingRemoval = false;
     }
+  }
+
+  animateItemsOut(item: HTMLElement, onComplete?: () => void): void {
+    gsap.to(item, {
+      opacity: 0,
+      y: -20,
+      scale: 0.8,
+      duration: this.config().duration,
+      ease: this.config().ease,
+      onComplete: () => {
+        if (onComplete) onComplete();
+      },
+    });
   }
 
   private savePositions(): void {
