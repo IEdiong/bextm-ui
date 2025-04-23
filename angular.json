@@ -22,7 +22,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/data"
             ],
             "styles": ["src/styles.css"],
             "scripts": [],

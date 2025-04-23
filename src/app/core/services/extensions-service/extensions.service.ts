@@ -8,7 +8,7 @@ export class ExtensionsService {
   getStoredExtensions(): Extension[] {
     const extensions = localStorage.getItem('extensions');
 
-    if (!extensions) {
+    if (!extensions || extensions === '[]') {
       this.persistExtensions(data);
       return data;
     }
